@@ -1,7 +1,8 @@
-# inirt (R package) <img src="https://github.com/inirt/.github/blob/master/images/hex-inirt.png" align="right" width="120" />
+# sds (R package)
 
-An R package for latent regression modeling in the context of multivariate and higher-order item response theory.
+An R package for S(E)IR compartmental models estimated using maximum likelihood. 
 
-Visit the package [website at inirt.github.io/doc/](https://inirt.github.io/doc/) for installation instructions, full documentation, and use cases.
+Allows for the possibility of constructing custom compartmental models.
 
+Includes projections with uncertainties using a resampling method.
 ---
