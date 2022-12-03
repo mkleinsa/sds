@@ -14,9 +14,13 @@
 #' @examples
 #' data(indiaAprilJune)
 #' N = 1366e6
-#' fit = seir(data = indiaAprilJune, model = "SIR")
-#' @importFrom deSolve ods
-#' @importFrom bbmle mle2
+#' fit = seir(data = indiaAprilJune, N = N, model = "SIR")
+#' fit$coef
+#' plot.seirMod(fit)
+#' plot.seirMod(fit, CI = TRUE)
+#' 
+#' @importFrom deSolve ode
+#' @importFrom bbmle mle2 coef
 #' 
 seir = function(data, model = c("SIR", "SEIR", "custom"), N, start = NULL) {
     if(model == "SIR") {
@@ -36,8 +40,12 @@ seir = function(data, model = c("SIR", "SEIR", "custom"), N, start = NULL) {
         start = start_default
     }
 
-    estimates = mle2(minuslogl = logli, start = starting_param_val, method = "Nelder-Mead", 
+    estimates = mle2(minuslogl = logli, start = start, method = "Nelder-Mead", 
         data = list(dat = data, N = N))
 
-    return(list(data, estimates))
+    result = list(data = data, coef = exp(bbmle::coef(estimates)), N = N, model = model,
+        logli = logli, start = start)
+    class(result) = "seirMod"
+
+    return(result)
 }

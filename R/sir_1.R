@@ -18,7 +18,7 @@ sir_1 = function(beta, gamma, I0, R0, times, N) {
 logli_sir_1 = function(beta, gamma, N, dat) {
   I0 = dat$I[1]
   R0 = dat$R[1]
-  times = dat$day
+  times = dat[["time"]]
   beta = exp(beta)
   gamma = exp(gamma)
   predictions = sir_1(beta = beta, gamma = gamma, I0 = I0, R0 = R0, 

@@ -4,12 +4,17 @@
 \alias{seir}
 \title{Susceptible-(Exposed)-Infectious-Recovered}
 \usage{
-seir(data, model = c("SIR", "SEIR", "custom"))
+seir(data, model = c("SIR", "SEIR", "custom"), N, start = NULL)
 }
 \description{
 Fit a S(E)IR model or give a ODE model.
 }
 \examples{
 data(indiaAprilJune)
-fit = seir(data = indiaAprilJune, model = "SIR")
+N = 1366e6
+fit = seir(data = indiaAprilJune, N = N, model = "SIR")
+fit$coef
+plot.seirMod(fit)
+plot.seirMod(fit, CI = TRUE)
+
 }
