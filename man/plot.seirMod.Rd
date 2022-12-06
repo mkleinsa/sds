@@ -2,10 +2,10 @@
 % Please edit documentation in R/plot.R
 \name{plot.seirMod}
 \alias{plot.seirMod}
-\title{Plot a seir model}
+\title{Plot a SEIR model}
 \usage{
-\method{plot}{seirMod}(fit, CI = FALSE)
+\method{plot}{seirMod}(fit, CI = FALSE, forecast = 0)
 }
 \description{
-Plot a seir model
+Plot a SEIR model
 }

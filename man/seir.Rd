@@ -4,17 +4,75 @@
 \alias{seir}
 \title{Susceptible-(Exposed)-Infectious-Recovered}
 \usage{
-seir(data, model = c("SIR", "SEIR", "custom"), N, start = NULL)
+seir(
+  data,
+  model = c("SIR", "SEIR", "custom", "SEIR-De", "SIR-Demography", "SEIR-Demography",
+    "SEIR-De-Demography"),
+  N,
+  start = NULL,
+  fixed_data = NULL
+)
 }
 \description{
-Fit a S(E)IR model or give a ODE model.
+Fit a S(E)IR (SIR or SEIR) model or give a custom ODE model.
 }
 \examples{
+
+# Data set
 data(indiaAprilJune)
 N = 1366e6
-fit = seir(data = indiaAprilJune, N = N, model = "SIR")
+
+# Basic SIR
+fit = seir(data = indiaAprilJune, N = N, model = "SIR", start = list(beta = log(1e-2), gamma = log(1e-5)))
 fit$coef
+coefs = fit$coef
+R0 = coefs[["beta"]] / coefs[["gamma"]]
+R0
+
+# Basic SIR with demography (fixed birth and death rate)
+lambda = mu = 1 / (69.416 * 365)
+fit = seir(data = indiaAprilJune, N = N, model = "SIR-Demography", start = list(beta = log(1e-2), gamma = log(1e-5)),
+           fixed_data = list(lambda = lambda, mu = mu))
+fit$coef
+coefs = fit$coef
+R0 = coefs[["beta"]] / coefs[["gamma"]]
+R0
+
+# Basic SEIR
+fit = seir(data = indiaAprilJune, N = N, model = "SEIR", start = list(beta = log(1e-2), gamma = log(1e-5)),
+           fixed_data = list(De = 5.2))
+fit$coef
+# R0 = ???
+# R0
+
+# Basic SEIR with demography
+lambda = mu = 1 / (69.416 * 365)
+fit = seir(data = indiaAprilJune, N = N, model = "SEIR-Demography", start = list(beta = log(1e-2), gamma = log(1e-5)),
+           fixed_data = list(De = 5.2, lambda = lambda, mu = mu))
+fit$coef
+# R0 = ???
+# R0
+
+# SEIR with inverse duration modeled
+# Estimate beta, gamma, and De (inverse duration of infection in SEIR)
+fit = seir(data = indiaAprilJune, N = N, model = "SEIR-De", start = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2))
+
+# SEIR with inverse duration modeled and demography (birts and deaths)
+# Estimate beta, gamma, and De (inverse duration of infection in SEIR)
+fit = seir(data = indiaAprilJune, N = N, model = "SEIR-De-Demography", start = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2),
+           fixed_data = list(De = 5.2, lambda = lambda, mu = mu))
+
+
+# Plots
 plot.seirMod(fit)
-plot.seirMod(fit, CI = TRUE)
+p = plot.seirMod(fit, CI = TRUE)
+library(ggplot2)
+p + xlim(0, 75) + ylim(0, 4e5)
+p2 = plot.seirMod(fit, CI = TRUE, forecast = 20)
+p2 + xlim(0, 75) + ylim(0, 4e5)
+
+# Estimate beta, gamma, and De (inverse duration of infection in SEIR)
+fit = seir(data = indiaAprilJune, N = N, model = "SEIR-De")
+
 
 }
