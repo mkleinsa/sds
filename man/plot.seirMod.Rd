@@ -4,7 +4,7 @@
 \alias{plot.seirMod}
 \title{Plot a SEIR model}
 \usage{
-\method{plot}{seirMod}(fit, CI = FALSE, forecast = 0)
+\method{plot}{seirMod}(fit, CI = FALSE, forecast = 0, mse_interval = TRUE, mse = NULL)
 }
 \description{
 Plot a SEIR model

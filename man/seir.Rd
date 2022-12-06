@@ -28,6 +28,7 @@ fit$coef
 coefs = fit$coef
 R0 = coefs[["beta"]] / coefs[["gamma"]]
 R0
+plot.seirMod(fit)
 
 # Basic SIR with demography (fixed birth and death rate)
 lambda = mu = 1 / (69.416 * 365)
@@ -37,6 +38,7 @@ fit$coef
 coefs = fit$coef
 R0 = coefs[["beta"]] / coefs[["gamma"]]
 R0
+plot.seirMod(fit)
 
 # Basic SEIR
 fit = seir(data = indiaAprilJune, N = N, model = "SEIR", start = list(beta = log(1e-2), gamma = log(1e-5)),
@@ -44,6 +46,7 @@ fit = seir(data = indiaAprilJune, N = N, model = "SEIR", start = list(beta = log
 fit$coef
 # R0 = ???
 # R0
+plot.seirMod(fit)
 
 # Basic SEIR with demography
 lambda = mu = 1 / (69.416 * 365)
@@ -52,22 +55,26 @@ fit = seir(data = indiaAprilJune, N = N, model = "SEIR-Demography", start = list
 fit$coef
 # R0 = ???
 # R0
+plot.seirMod(fit)
 
 # SEIR with inverse duration modeled
 # Estimate beta, gamma, and De (inverse duration of infection in SEIR)
 fit = seir(data = indiaAprilJune, N = N, model = "SEIR-De", start = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2))
 
+plot.seirMod(fit)
+
 # SEIR with inverse duration modeled and demography (birts and deaths)
 # Estimate beta, gamma, and De (inverse duration of infection in SEIR)
 fit = seir(data = indiaAprilJune, N = N, model = "SEIR-De-Demography", start = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2),
-           fixed_data = list(De = 5.2, lambda = lambda, mu = mu))
+           fixed_data = list(lambda = lambda, mu = mu))
 
+plot.seirMod(fit)
 
 # Plots
 plot.seirMod(fit)
 p = plot.seirMod(fit, CI = TRUE)
 library(ggplot2)
-p + xlim(0, 75) + ylim(0, 4e5)
+p + xlim(0, 63) + ylim(0, 1.5e5)
 p2 = plot.seirMod(fit, CI = TRUE, forecast = 20)
 p2 + xlim(0, 75) + ylim(0, 4e5)
 

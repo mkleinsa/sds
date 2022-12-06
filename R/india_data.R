@@ -35,49 +35,49 @@ india_data = function(date_initial, date_final) {
 
     # Process and merge data ----
     india_confirmed = confirmed %>%
-    filter(`Country/Region` == "India") %>% #, is.na(`Province/State`)
-    select(-`Province/State`, -Lat, -Long, -`Country/Region`)
-    india_confirmed = tibble(date = colnames(india_confirmed),
-                            cases_total = as.numeric(india_confirmed[1, ]))
+        filter(`Country/Region` == "India") %>% #, is.na(`Province/State`)
+        select(-`Province/State`, -Lat, -Long, -`Country/Region`)
+        india_confirmed = tibble(date = colnames(india_confirmed),
+                                 cases_total = as.numeric(india_confirmed[1, ]))
 
     india_deaths = deaths %>%
-    filter(`Country/Region` == "India") %>% #, is.na(`Province/State`)
-    select(-`Province/State`, -Lat, -Long, -`Country/Region`)
-    india_deaths = tibble(date = colnames(india_deaths),
-                            deaths_total = as.numeric(india_deaths[1, ]))
+        filter(`Country/Region` == "India") %>% #, is.na(`Province/State`)
+        select(-`Province/State`, -Lat, -Long, -`Country/Region`)
+        india_deaths = tibble(date = colnames(india_deaths),
+                              deaths_total = as.numeric(india_deaths[1, ]))
 
     india_recovered = recoveries %>%
-    filter(`Country/Region` == "India") %>% #, is.na(`Province/State`)
-    select(-`Province/State`, -Lat, -Long, -`Country/Region`)
-    india_recovered = tibble(date = colnames(india_recovered),
-                            recoveries_total = as.numeric(india_recovered[1, ]))
+        filter(`Country/Region` == "India") %>% #, is.na(`Province/State`)
+        select(-`Province/State`, -Lat, -Long, -`Country/Region`)
+        india_recovered = tibble(date = colnames(india_recovered),
+                                 recoveries_total = as.numeric(india_recovered[1, ]))
 
     data = india_confirmed %>% left_join(india_recovered, by = "date")
     data = data %>% left_join(india_deaths, by = "date")
 
     data =
-    data %>%
-    mutate(date = as.Date(date, format = "%m/%d/%y"))
+        data %>%
+        mutate(date = as.Date(date, format = "%m/%d/%y"))
 
     data =
-    data %>%
-    mutate(total_removed = deaths_total + recoveries_total,
-            active_cases = cases_total - total_removed,
-            day = 1:n(),
-            I = active_cases,
-            R = total_removed)
+        data %>%
+        mutate(total_removed = deaths_total + recoveries_total,
+               active_cases  = cases_total - total_removed,
+               day           = 1:n(),
+               I             = active_cases,
+               R             = total_removed)
 
     data =
-    data %>%
-    filter(I < 2e7, R > -3e5)
+        data %>%
+        filter(I < 2e7, R > -3e5)
 
     data =
-    data %>%
-    filter(date >= date_initial, date <= date_final)
+        data %>%
+        filter(date >= date_initial, date <= date_final)
 
     data = 
-    data %>%
-    select(date, I, R)
+        data %>%
+        select(date, I, R)
 
     return(data)
 }
