@@ -2,10 +2,33 @@
 % Please edit documentation in R/plot.R
 \name{plot.seirMod}
 \alias{plot.seirMod}
-\title{Plot a SEIR model}
+\title{Plot a S(E)IR model}
 \usage{
-\method{plot}{seirMod}(fit, CI = FALSE, forecast = 0, mse_interval = TRUE, mse = NULL)
+\method{plot}{seirMod}(
+  fit,
+  CI = FALSE,
+  forecast = 0,
+  nsim = 250,
+  mse_interval = TRUE,
+  mse = NULL
+)
+}
+\arguments{
+\item{fit}{seirMod model fit object. Result of calling seir() from sds package.}
+
+\item{CI}{TRUE/FALSE simulate confidence bands by resampling procedure?}
+
+\item{forecast}{number of days to forecast (i.e. make predictions). Defaults to 0, or no prediction.}
+
+\item{nsim}{number of simulations to run if CI = TRUE. Default = 250.}
+
+\item{mse_interval}{TRUE/FALSE, use smape (estimated model error) (if CI = TRUE) as s.d. of normal distribution in resampling simulation?}
+
+\item{mse}{user specified error of simulation (s.d. of normal distribution)}
+}
+\value{
+a ggplot object. Object can be stored and further updated just like a ggplot. See examples from seir() function.
 }
 \description{
-Plot a SEIR model
+Plot observed data, best fit, forecasts, and confidence intervals via simulation.
 }

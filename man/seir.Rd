@@ -65,7 +65,8 @@ plot.seirMod(fit)
 
 # SEIR with inverse duration modeled and demography (birts and deaths)
 # Estimate beta, gamma, and De (inverse duration of infection in SEIR)
-fit = seir(data = indiaAprilJune, N = N, model = "SEIR-De-Demography", start = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2),
+data(indiaAprilJuly)
+fit = seir(data = indiaAprilJuly, N = N, model = "SEIR-De-Demography", start = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2),
            fixed_data = list(lambda = lambda, mu = mu))
 
 plot.seirMod(fit)

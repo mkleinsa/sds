@@ -51,7 +51,8 @@
 #' 
 #' # SEIR with inverse duration modeled and demography (birts and deaths)
 #' # Estimate beta, gamma, and De (inverse duration of infection in SEIR)
-#' fit = seir(data = indiaAprilJune, N = N, model = "SEIR-De-Demography", start = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2),
+#' data(indiaAprilJuly)
+#' fit = seir(data = indiaAprilJuly, N = N, model = "SEIR-De-Demography", start = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2),
 #'            fixed_data = list(lambda = lambda, mu = mu))
 #' 
 #' plot.seirMod(fit)
@@ -100,7 +101,7 @@ seir = function(data, model = c("SIR", "SEIR", "custom", "SEIR-De", "SIR-Demogra
         } else if(!all(c("beta", "gamma", "De") %in% names(start))) {
             stop("Start requires a named list of starting values for beta, gamma, and De, e.g. start = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2).")
         }
-        logli = logli_seir_1
+        logli = logli_seir_1_de
         # start_default = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2)
     } else if(model == "SIR-Demography") {
         if(is.null(start)) {
@@ -130,7 +131,7 @@ seir = function(data, model = c("SIR", "SEIR", "custom", "SEIR-De", "SIR-Demogra
         logli = logli_seir_1_demography
         # start_default = list(beta = log(1e-2), gamma = log(1e-5))
     } else if(model == "SEIR-De-Demography") {
-        logli = logli_seir_1_demography
+        logli = logli_seir_1_de_demography
         # start_default = list(beta = log(1e-2), gamma = log(1e-5), De = 5.2)
     } else if(model == "custom") {
         sirmod = custom_s(model_details)
@@ -139,10 +140,6 @@ seir = function(data, model = c("SIR", "SEIR", "custom", "SEIR-De", "SIR-Demogra
     }
 
     data[["time"]] = 1:nrow(data)
-
-    # if(is.null(start)) {
-    #     start = start_default
-    # }
 
     if(model == "SIR") {
         data = list(dat = data, N = N)
@@ -176,8 +173,7 @@ seir = function(data, model = c("SIR", "SEIR", "custom", "SEIR-De", "SIR-Demogra
         coef = c(exp(coef[c("beta", "gamma")]), coef["De"])
     }
 
-    result = list(data = data, coef = exp(bbmle::coef(estimates)), N = N, model = model,
-        logli = logli, start = start, fixed_data = fixed_data)
+    result = list(data = data, coef = coef, N = N, model = model, logli = logli, start = start, fixed_data = fixed_data)
     class(result) = "seirMod"
     return(result)
 }
