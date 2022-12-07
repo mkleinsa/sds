@@ -1,7 +1,28 @@
 #' Susceptible-(Exposed)-Infectious-Recovered
 #' 
-#' Fit a S(E)IR (SIR or SEIR) model or give a custom ODE model.
-#'
+#' Fit a S(E)IR (SIR or SEIR) model or give a custom ODE model. This function will fit the basic SIR model, 
+#' SEIR model, SEIR with inverse infection time, and all previously mentioned models with demography (birth rate, death rate).
+#' 
+#' @param data a data.frame with columns named "I" for active infections, ordered by time, i.e. row 1 = day 1, etc.
+#' @param model choice of model. See details section of this page for full description of the models
+#' @param N population size to be modeled
+#' @param start named list of starting values. Any parameter that is modeled needs starting values. See details section of this page and the examples.
+#' @param fixed_data named list of fixed data. This list is for fixed values needed by the model, but the values are not optimized.
+#' 
+#' @details 
+#' Model details
+#' 
+#' @return a `seirMod` fit object. This is a list with class `seirMod`.
+#' Item include: data, coef, N = N, model = model, logli = logli, start = start, fixed_data = fixed_data)
+#' \itemize{
+#' \item{data - }{input data}
+#' \item{coef - }{coeficient estimates}
+#' \item{N - }{population size}
+#' \item{model - }{R function for the model}
+#' \item{logli - }{R function for log likelihood of the model}
+#' \item{start - }{starting values list}
+#' \item{fixed_data - }{fixed data list}
+#' }
 #' @examples
 #' 
 #' # Data set
