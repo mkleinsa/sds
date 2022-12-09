@@ -73,9 +73,13 @@ plot.seirMod = function(fit, CI = FALSE, forecast = 0, nsim = 250, mse_interval 
             times = plot_times, N = N, De = param_hat["De"], lambda = fixed_data[["lambda"]], mu = fixed_data[["mu"]])[["I"]]
     }
 
-    ################# model_rmse = sqrt((( (best_predictions[1:nrow(data)] - data[["I"]]) * abs(mean(best_predictions[1:nrow(data)] - data[["I"]])) / (data[["I"]])  )^2) / nrow(data))
+    model_rmse = sqrt(sum(( (best_predictions[1:nrow(data)] - data[["I"]]) /  1.0 )^2) / nrow(data)) #(data[["I"]])
+    print(model_rmse)
+    print("ratio to median: ")
+    print(model_rmse / median(data[["I"]]))
     # model_rmse = (1 / nrow(data)) * ( sum( abs(best_predictions[1:nrow(data)] - data[["I"]]) / ((abs(best_predictions[1:nrow(data)]) + abs(data[["I"]])) / 2)  ) )
     model_error = smape(pred = best_predictions[1:nrow(data)], obs = data[["I"]], n = nrow(data))
+    print(model_error)
 
     p = ggplot(data = data.frame(obs = c(data[["I"]], rep(0, forecast)), pred = best_predictions, time = plot_times)) + 
         geom_col(aes(x = time, y = obs), fill = "#00274C") + 
@@ -98,17 +102,19 @@ plot.seirMod = function(fit, CI = FALSE, forecast = 0, nsim = 250, mse_interval 
         resamp_day = matrix(nrow = nsim, ncol = 1)
         # resamp_stretch = rexp(250, rate = 1)
         resamp_stretch = rnorm(nsim, mean = 1, sd = model_error)
-        resamp_jitter = rnorm(nsim, mean = 1, sd = model_error)
+        resamp_jitter = rnorm(nsim, mean = 1, sd = median(model_rmse / (data[["I"]])))
         #resamp_stretch = (resamp_stretch - min(resamp_stretch)) / (max(resamp_stretch) - min(resamp_stretch))
         #resamp_stretch = (resamp_stretch - 0.25) / (1.75 - 0.25)
         resamp_stretch = resamp_stretch - mean(resamp_stretch) + 1.0
         #resamp_jitter = (resamp_jitter - 0.5) / (1.5 - 0.5)
-        resamp_jitter = resamp_jitter - mean(resamp_jitter)
+        resamp_jitter = resamp_jitter - mean(resamp_jitter) + 1.0
         #print(mean(resamp_stretch))
         # resamp_stretch = resamp_stretch + 1
         for(i in 1:nrow(resamp_est)) {
             dat = data
-            dat[["I"]] = round(((dat[["I"]] + resamp_jitter[i])*resamp_stretch[i]), digits = 0)
+            # dat[["I"]] = round(((dat[["I"]] + (resamp_jitter[i]/(dat[["I"]])))), digits = 0) # *resamp_stretch[i] + resamp_jitter[i]
+            dat[["I"]] = round(((dat[["I"]] * resamp_jitter[i])), digits = 0)
+            #dat[["I"]] = round(((dat[["I"]] + resamp_jitter[i])), digits = 0)
             resamp_day[i, ] = dat[["time"]][1]
             resamp_dat[i, ] = as.numeric(dat[1, 2:3])
             # estimates = mle2(minuslogl = logli, start = start, method = "Nelder-Mead", data = mle2_data)

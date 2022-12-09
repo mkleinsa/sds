@@ -110,5 +110,15 @@ p2 + xlim(0, 75) + ylim(0, 4e5)
 # Estimate beta, gamma, and De (inverse duration of infection in SEIR)
 fit = seir(data = indiaAprilJune, N = N, model = "SEIR-De")
 
+# wave 2
+india = india_data("2021-03-20", "2021-06-05")
+lambda = mu = 1 / (69.416 * 365)
+fit = seir(data = india, N = 39e6, model = "SIR-Demography", start = list(beta = log(1e-2), gamma = log(1e-5)),
+           fixed_data = list(lambda = lambda, mu = mu))
+fit$coef[1] / fit$coef[2]
+
+plot(fit)
+plot(fit, CI = TRUE, forecast = 30, nsim = 500, mse_interval = TRUE)
+
 
 }
