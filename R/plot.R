@@ -154,7 +154,7 @@ plot.seirMod = function(fit, CI = FALSE, forecast = 0, nsim = 250, mse_interval 
         }
 
         q_tiles = quantile(q_preds, p = c(0.025, 0.975))
-        print(hist(q_preds))
+        # print(hist(q_preds))
         lower = which.min(abs(q_tiles[1] - q_preds))
         upper = which.min(abs(q_tiles[2] - q_preds))
 
